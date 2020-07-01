@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -15,13 +17,23 @@ public class AddData extends JFrame implements ActionListener {
     private String t1,t2,t3,t4,t5a,t5b,t5c,t6,t7,t8,t9;
     private double currentMeter,previousMeter,tunggakan;
     private int accNo;
-    static ArrayList<Customer> CustomerList = new ArrayList<>();
+    static ArrayList<Customer> customerList = new ArrayList<>();
 
     public AddData(){
 
         getContentPane().setLayout(null);
         setTitle("Add Data");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to Exit?", "Pay Bill System", dialogButton);
+                if (dialogResult == 0) {
+                    System.exit(0);
+                }
+            }
+        });
 
         label10= new JLabel();
         label10.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("Logo.png")).getImage().getScaledInstance(150, 80, Image.SCALE_SMOOTH)));;
@@ -141,11 +153,11 @@ public class AddData extends JFrame implements ActionListener {
                 cData.calculateBill();
                 cData.setCurrentMeter(currentMeter);
                 cData.setPreviousMeter(previousMeter);
-                CustomerList.add(new Customer(t1,t2,t3,t4,t5a,t5b,t5c,t6,t7,t8,t9,cData.getTotalUsage(),cData.getCurrentCharge(),cData.getTotalcurrentCharge()));
+                customerList.add(new Customer(t1,accNo,t3,t4,t5a,t5b,t5c,t6,t7,t8,t9,cData.getTotalUsage(),cData.getCurrentCharge(),cData.getTotalcurrentCharge()));
 
                 try {
-                    FileWriter fw = new FileWriter("Customer.txt");
-                    fw.write(String.valueOf(CustomerList));
+                    FileWriter fw = new FileWriter("Customer.txt",true);
+                    fw.write(String.valueOf(customerList));
                     fw.flush();
                     fw.close();
 

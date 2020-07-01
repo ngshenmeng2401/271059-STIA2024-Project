@@ -1,7 +1,7 @@
 package com.company;
 
 
-public class CalculateData {
+public class CalculateData extends AddData{
 
     private double currentMeter,previousMeter,tunggakan,totalUsage,currentCharge,totalcurrentCharge;
 
