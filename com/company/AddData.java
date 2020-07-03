@@ -1,43 +1,56 @@
 package com.company;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.*;
 import java.util.ArrayList;
 
 public class AddData extends JFrame implements ActionListener {
 
-    private JLabel label1,label2,label3,label4,label5,label6,label7,label8,label9,label10;
-    private JTextField text1,text2,text3, text4,text5A,text5B,text5C,text6,text7,text8,text9;
-    private JButton button1,button2,button3;
-    private String t1,t2,t3,t4,t5a,t5b,t5c,t6,t7,t8,t9;
-    private double currentMeter,previousMeter,tunggakan;
-    private int accNo;
+    JLabel label1, label2, label3, label4, label5, label6, label7, label8, label9, label10;
+    JTextField text1, text2, text3, text4, text5, text6, text7, text8, text9;
+    JButton button1, button2, button3;
+    DefaultTableModel dtm;
+    JTable table;
+    JScrollPane jsp1;
+    JPanel input, button;
+
     static ArrayList<Customer> customerList = new ArrayList<>();
 
-    public AddData(){
+    public AddData() {
+        ImageIcon icon = new ImageIcon("images/Logo.png");
+        setIconImage(icon.getImage());
 
-        getContentPane().setLayout(null);
+        table();
+        setLayout(null);
         setTitle("Add Data");
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 int dialogButton = JOptionPane.YES_NO_OPTION;
-                int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to Exit?", "Pay Bill System", dialogButton);
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Do you want to Exit?", "Electricity Billing System", dialogButton);
                 if (dialogResult == 0) {
                     System.exit(0);
                 }
             }
         });
 
-        label10= new JLabel();
-        label10.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("Logo.png")).getImage().getScaledInstance(150, 80, Image.SCALE_SMOOTH)));;
-        label10.setBounds(20,10,150,80);
+        input = new JPanel();
+        input.setBounds(20, 306, 700, 250);
+        input.setLayout(null);
+        input.setBorder(BorderFactory.createEtchedBorder());
+        add(input);
+
+        label10 = new JLabel();
+        label10.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("Logo.png")).getImage().getScaledInstance(150, 80, Image.SCALE_SMOOTH)));
+        label10.setBounds(20, 10, 150, 80);
         add(label10);
 
         label1 = new JLabel("Date Bill:");
@@ -54,9 +67,7 @@ public class AddData extends JFrame implements ActionListener {
         text2 = new JTextField(10);
         text3 = new JTextField(10);
         text4 = new JTextField(50);
-        text5A = new JTextField(60);
-        text5B = new JTextField(60);
-        text5C = new JTextField(60);
+        text5 = new JTextField(60);
         text6 = new JTextField(10);
         text7 = new JTextField(10);
         text8 = new JTextField(10);
@@ -66,137 +77,168 @@ public class AddData extends JFrame implements ActionListener {
         button2 = new JButton("Reset");
         button3 = new JButton("Back");
 
-        label1.setBounds(50,120,100,25);
-        label2.setBounds(50,150,100,25);
-        label3.setBounds(50,180,100,25);
-        label4.setBounds(50,210,100,25);
-        label5.setBounds(50,240,100,25);
-        label6.setBounds(50,330,100,25);
-        label7.setBounds(50,360,100,25);
-        label8.setBounds(50,390,100,25);
-        label9.setBounds(50,420,100,25);
+        label1.setBounds(20, 5, 150, 50);
+        label2.setBounds(20, 45, 150, 50);
+        label3.setBounds(20, 85, 150, 50);
+        label4.setBounds(20, 125, 150, 50);
+        label5.setBounds(20, 165, 150, 50);
+        label6.setBounds(370, 5, 150, 50);
+        label7.setBounds(370, 45, 150, 50);
+        label8.setBounds(370, 85, 150, 50);
+        label9.setBounds(370, 125, 150, 50);
 
-        text1.setBounds(150,120,100,25);
-        text2.setBounds(150,150,100,25);
-        text3.setBounds(150,180,100,25);
-        text4.setBounds(150,210,400,25);
-        text5A.setBounds(150,240,300,25);
-        text5B.setBounds(150,270,300,25);
-        text5C.setBounds(150,300,300,25);
-        text6.setBounds(150,330,100,25);
-        text7.setBounds(150,360,100,25);
-        text8.setBounds(150,390,100,25);
-        text9.setBounds(150,420,100,25);
+        text1.setBounds(170, 20, 150, 25);
+        text2.setBounds(170, 60, 150, 25);
+        text3.setBounds(170, 100, 150, 25);
+        text4.setBounds(170, 140, 150, 25);
+        text5.setBounds(170, 180, 150, 55);
+        text6.setBounds(520, 20, 150, 25);
+        text7.setBounds(520, 60, 150, 25);
+        text8.setBounds(520, 100, 150, 25);
+        text9.setBounds(520, 140, 150, 25);
 
-        button1.setBounds(50,480,100,25);
-        button2.setBounds(250,480,100,25);
-        button3.setBounds(450,480,100,25);
+        button = new JPanel();
+        button.setBounds(20, 571, 700, 75);
+        button.setLayout(null);
+        button.setBorder(BorderFactory.createEtchedBorder());
+        add(button);
 
-        add(label1);
-        add(label2);
-        add(label3);
-        add(label4);
-        add(label5);
-        add(label6);
-        add(label7);
-        add(label8);
-        add(label9);
+        button1.setBounds(100, 20, 100, 30);
+        button2.setBounds(300, 20, 100, 30);
+        button3.setBounds(500, 20, 100, 30);
 
-        add(text1);
-        add(text2);
-        add(text3);
-        add(text4);
-        add(text5A);
-        add(text5B);
-        add(text5C);
-        add(text6);
-        add(text7);
-        add(text8);
-        add(text9);
+        input.add(label1);
+        input.add(label2);
+        input.add(label3);
+        input.add(label4);
+        input.add(label5);
+        input.add(label6);
+        input.add(label7);
+        input.add(label8);
+        input.add(label9);
 
-        add(button1);
-        add(button2);
-        add(button3);
+        input.add(text1);
+        input.add(text2);
+        input.add(text3);
+        input.add(text4);
+        input.add(text5);
+        input.add(text6);
+        input.add(text7);
+        input.add(text8);
+        input.add(text9);
+
+        button.add(button1);
+        button.add(button2);
+        button.add(button3);
 
         button1.addActionListener(this);
         button2.addActionListener(this);
         button3.addActionListener(this);
 
+        setResizable(false);
         setVisible(true);
-        setBounds(200,120,600,600);
+        setLocation(400, 50);
+        setSize(750, 700);
+
+        for (Customer customer:customerList) {
+            System.out.println(customer);
+        }
+    }
+
+    public void table() {
+        String[] header = new String[]{"Penggunaan elektrik(kWj)", "Kadar tariff (RM)", "Unit penggunaan elektrik (kWj)"};
+        dtm = new DefaultTableModel(header, 0);
+        dtm.addRow(new Object[]{"1-200", "0.218", "200"});
+        dtm.addRow(new Object[]{"201-300", "0.334", "100"});
+        dtm.addRow(new Object[]{"301-600", "0.516", "300"});
+        dtm.addRow(new Object[]{"601-900", "0.546", "300"});
+        dtm.addRow(new Object[]{"901 dan ke atas", "0.571", "Apa-apa nilai penggunaan dalam julat ini"});
+        table = new JTable();
+
+        JTableHeader header1 = table.getTableHeader();
+        int headerHeight = 30;
+        header1.setPreferredSize(new Dimension(50, headerHeight));
+
+        ((DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
+        table.setModel(dtm);
+
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        table.setDefaultRenderer(Object.class, centerRenderer);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.getTableHeader().setResizingAllowed(false);
+        table.setEnabled(false);
+        table.setRowHeight(30);
+
+        jsp1 = new JScrollPane();
+        jsp1.setViewportView(table);
+        jsp1.setBounds(20, 105, 700, 186);
+        jsp1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        jsp1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        add(jsp1);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getSource()==button1){
+        if (e.getSource() == button1) {
+            try {
+                if (text1.getText().isEmpty() || text2.getText().isEmpty() || text3.getText().isEmpty() || text4.getText().isEmpty() || text5.getText().isEmpty() || text6.getText().isEmpty() || text7.getText().isEmpty() || text8.getText().isEmpty() || text9.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Some fields have not been filled.", "Electricity Billing System", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    String t1 = text1.getText();
+                    t1 = t1.toUpperCase();
+                    long t2 = Long.parseLong(text2.getText());
+                    long t3 = Long.parseLong(text3.getText());
+                    String t4 = text4.getText();
+                    t4 = t4.toUpperCase();
+                    String t5 = text5.getText();
+                    t5 = t5.toUpperCase();
+                    long t6 = Long.parseLong(text6.getText());
+                    int t7 = Integer.parseInt(text7.getText());
+                    int t8 = Integer.parseInt(text8.getText());
+                    double t9 = Double.parseDouble(text9.getText());
+                    double cC = 0, tCC = 0;
+                    int tU = 0;
 
-            try{
-                t1 = text1.getText();
-                t2 = text2.getText();
-                t3 = text3.getText();
-                t4 = text4.getText();
-                t5a = text5A.getText();
-                t5b = text5B.getText();
-                t5c = text5C.getText();
-                t6 = text6.getText();
-                t7 = text7.getText();
-                t8 = text8.getText();
-                t9 = text9.getText();
-
-                accNo = Integer.parseInt(t2);
-                previousMeter = Double.parseDouble(t7);
-                currentMeter = Double.parseDouble(t8);
-                tunggakan = Double.parseDouble(t9);
-
-                CalculateData cData = new CalculateData(currentMeter,previousMeter,tunggakan);
-                cData.calculateBill();
-                cData.setCurrentMeter(currentMeter);
-                cData.setPreviousMeter(previousMeter);
-                customerList.add(new Customer(t1,accNo,t3,t4,t5a,t5b,t5c,t6,t7,t8,t9,cData.getTotalUsage(),cData.getCurrentCharge(),cData.getTotalcurrentCharge()));
-
-                try {
-                    FileWriter fw = new FileWriter("Customer.txt",true);
-                    fw.write(String.valueOf(customerList));
-                    fw.flush();
-                    fw.close();
-
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                    if (t7 > 0) {
+                        if (t8 > t7) {
+                            clearField();
+                            ElectricityBillingSystem electricityBillingSystem = new ElectricityBillingSystem(t1, t2, t3, t4, t5, t6, t7, t8, tU, t9, cC, tCC);
+                            JOptionPane.showMessageDialog(this, "Data has been saved.\n" + electricityBillingSystem.toString(), "Electricity Billing System", JOptionPane.INFORMATION_MESSAGE);
+                        } else
+                            JOptionPane.showMessageDialog(this, "Current Meter must bigger than Previous Meter.", "Electricity Billing System", JOptionPane.ERROR_MESSAGE);
+                    } else
+                        JOptionPane.showMessageDialog(this, "Please enter positive number", "Electricity Billing System", JOptionPane.ERROR_MESSAGE);
                 }
-//                System.out.println(customerList);
-                JOptionPane.showMessageDialog(this, "Data Saved");
-
-            }catch (NumberFormatException e1){
-                JOptionPane.showMessageDialog(this, "Please key in data!!!");
-
+            } catch (NumberFormatException e1) {
+                JOptionPane.showMessageDialog(this, "Please enter an integer.", "Electricity Billing System", JOptionPane.ERROR_MESSAGE);
             }
-
-        }if (e.getSource()==button2){
-
-            text1.setText(null);
-            text2.setText(null);
-            text3.setText(null);
-            text4.setText(null);
-            text5A.setText(null);
-            text5B.setText(null);
-            text5C.setText(null);
-            text6.setText(null);
-            text7.setText(null);
-            text8.setText(null);
-            text9.setText(null);
-
-        }if (e.getSource()==button3){
+            ElectricityBillingSystem ebs = new ElectricityBillingSystem();
+            ebs.fileWriter();
+        }
+        if (e.getSource() == button2) {
+            clearField();
+        }
+        if (e.getSource() == button3) {
             new MainMenu();
-            setVisible(false);
+            this.dispose();
         }
     }
 
-    public String getT4() {
-        return t4;
+    public void clearField() {
+        text1.setText(null);
+        text2.setText(null);
+        text3.setText(null);
+        text4.setText(null);
+        text5.setText(null);
+        text6.setText(null);
+        text7.setText(null);
+        text8.setText(null);
+        text9.setText(null);
     }
 
-    public int getAccNo() {
-        return accNo;
-    }
+
 }

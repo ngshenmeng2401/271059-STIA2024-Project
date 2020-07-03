@@ -1,42 +1,32 @@
 package com.company;
 
-public class Customer extends AddData{
+public class Customer {
 
-    private String t1,t3,t4,t5a,t5b,t5c,t6,t7,t8,t9;
-    private double totalUsage,currentCharge,totalcurrentCharge;
-    private int accNo;
+    String t1, t4, t5;
+    double t9, cC, tCC;
+    int tU, t7, t8;
+    long t2, t3, t6;
 
-    public Customer(String t1, int accNo, String t3, String t4, String t5a, String t5b, String t5c, String t6, String t7, String t8, String t9, double totalUsage, double currentCharge, double totalcurrentCharge) {
+    public Customer(String t1, long t2, long t3, String t4, String t5, long t6, int t7, int t8, int tU, double t9, double cC, double tCC) {
         this.t1 = t1;
-        this.accNo = accNo;
+        this.t2 = t2;
         this.t3 = t3;
         this.t4 = t4;
-        this.t5a = t5a;
-        this.t5b = t5b;
-        this.t5c = t5c;
+        this.t5 = t5;
         this.t6 = t6;
         this.t7 = t7;
         this.t8 = t8;
+        this.tU = tU;
         this.t9 = t9;
-        this.totalUsage = totalUsage;
-        this.currentCharge = currentCharge;
-        this.totalcurrentCharge = totalcurrentCharge;
+        this.cC = cC;
+        this.tCC = tCC;
     }
 
-
-        public String toString(){
-
-        return t1+" "+accNo+" "+t3+" "+t4+" "+t5a+" "+t5b+" "+t5c+" "+t6+" "+t7+" "+t8+" "+t9+" "+currentCharge+" "+totalcurrentCharge;
-    }
-
-
-    @Override
-    public int getAccNo() {
-        return accNo;
-    }
-
-    @Override
     public String getT4() {
         return t4;
+    }
+
+    public long getT2() {
+        return t2;
     }
 }
