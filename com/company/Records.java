@@ -1,7 +1,5 @@
 package com.company;
 
-import coronaVirus.CoronaVirus;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -13,21 +11,20 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-//import static com.company.ElectricityBillingSystem.customerList;
 
 public class Records extends JFrame implements ActionListener {
+
+    //  static ArrayList<Customer> customerList = new ArrayList<>();
 
     String[] header = new String[]{"Date Bill", "Account No", "Invoice No", "Name", "Address", "Meter No", "Previos Meter", "Current Meter", "Total Usage", "Tunggakan", "Current Charges", "Total CurrentCharge"};
 
     JTable output;
     DefaultTableModel dtm;
     JScrollPane jsp;
-    JButton search,edit, delete,back;
+    JButton search, reset, edit, delete,back;
     JLabel picture,label1,label2;
     JTextField text1,text2;
     JPanel panel1,panel2;
-    DefaultTableModel dtm2;
-
 
     public Records() {
         ImageIcon icon = new ImageIcon("images/Logo.png");
@@ -58,12 +55,6 @@ public class Records extends JFrame implements ActionListener {
         picture.setBounds(20, 10, 150, 80);
         add(picture);
 
-
-        for (Customer customer:ElectricityBillingSystem.customerList) {
-            System.out.println(customer);
-        }
-
-        System.out.println(ElectricityBillingSystem.customerList);
     }
 
     public void outputPanel1(){
@@ -100,24 +91,35 @@ public class Records extends JFrame implements ActionListener {
         add(panel2);
 
         search = new JButton("Search");
-        search.setBounds(75, 20, 100, 30);
+        search.setBounds(50, 20, 100, 30);
         panel2.add(search);
         search.addActionListener(this);
 
+        reset = new JButton("Reset");
+        reset.setBounds(175, 20, 100, 30);
+        panel2.add(reset);
+        reset.addActionListener(this);
+
         edit = new JButton("Edit");
-        edit.setBounds(225, 20, 100, 30);
+        edit.setBounds(300, 20, 100, 30);
         panel2.add(edit);
         edit.addActionListener(this);
 
         delete = new JButton("Delete");
-        delete.setBounds(375, 20, 100, 30);
+        delete.setBounds(425, 20, 100, 30);
         panel2.add(delete);
         delete.addActionListener(this);
 
         back = new JButton("Back");
-        back.setBounds(525, 20, 100, 30);
+        back.setBounds(550, 20, 100, 30);
         panel2.add(back);
         back.addActionListener(this);
+
+        search.setFont(new Font("Dialog",Font.BOLD,14));
+        reset.setFont(new Font("Dialog",Font.BOLD,14));
+        edit.setFont(new Font("Dialog",Font.BOLD,14));
+        delete.setFont(new Font("Dialog",Font.BOLD,14));
+        back.setFont(new Font("Dialog",Font.BOLD,14));
     }
 
     public void outputTable() {
@@ -145,6 +147,7 @@ public class Records extends JFrame implements ActionListener {
         output.setDefaultEditor(Object.class, null);
         output.setRowHeight(30);
 
+        // insertionSort(ElectricityBillingSystem.customerList);
         dtm.setRowCount(0);
         for (Customer cus : ElectricityBillingSystem.customerList) {
             String t9 = String.format("%.2f", cus.t9);
@@ -162,6 +165,22 @@ public class Records extends JFrame implements ActionListener {
 
     }
 
+    public void insertionSort(ArrayList<Customer> customerList) {
+
+        for (int x = 1; x < customerList.size(); x++) {
+
+            Customer temp = customerList.get(x);
+            int y = x - 1;
+
+            while (y >= 0 && customerList.get(y).getT2() > temp.getT2()) {
+
+                customerList.set(x, customerList.get(y));
+                customerList.set(y, temp);
+                y--;
+            }
+        }
+    }
+
     public int binarySearch(Long aacNo, ArrayList<Customer> customerList){
 
         int i=0;
@@ -170,12 +189,32 @@ public class Records extends JFrame implements ActionListener {
         while (i<=j){
 
             int mid=(i+j)/2;
-            if (customerList.get(mid).getT2()==aacNo){
-                return mid;
+            if (customerList.get(mid).getT2()<aacNo){
+                i = mid+1;
             }else if (customerList.get(mid).getT2()>aacNo){
                 j=mid-1;
             }else {
-                i=mid+1;
+                return mid;
+            }
+        }
+        return -1;
+    }
+
+    public int binarySearch2(String name, ArrayList<Customer> customerList){
+
+        int i=0;
+        int j=customerList.size()-1;
+
+        while (i<=j){
+            int mid= (i+j)/2;
+            if (customerList.get(mid).getT4().compareTo(name)<0){
+                i = mid+1;
+            }
+            else if (customerList.get(mid).getT4().compareTo(name)>0){
+                j= mid-1;
+            }
+            else {
+                return mid;
             }
         }
         return -1;
@@ -186,23 +225,68 @@ public class Records extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource()==search){
+            if(text1.getText().isEmpty() && text2.getText().isEmpty())
+                JOptionPane.showMessageDialog(this,"The field is empty", "Electricity Billing System", JOptionPane.ERROR_MESSAGE);
 
-            Long t1 = Long.parseLong(text1.getText());
-            String t2 = text2.getText();
+            else if(!text1.getText().isEmpty() && !text2.getText().isEmpty())
+                JOptionPane.showMessageDialog(this,"One time only can search one field", "Electricity Billing System", JOptionPane.ERROR_MESSAGE);
 
-            int index = binarySearch(t1,ElectricityBillingSystem.customerList);
+            else if(text2.getText().equals("")) {
+                try {
+                    Long t1 = Long.parseLong(text1.getText());
+                    int index = binarySearch(t1, ElectricityBillingSystem.customerList);
 
-            if (index >= 0)
-            {
-
-                dtm2.setRowCount(0);
-                Object[] objs = {ElectricityBillingSystem.customerList.get(index).t1,ElectricityBillingSystem.customerList.get(index).t2,ElectricityBillingSystem.customerList.get(index).t3,ElectricityBillingSystem.customerList.get(index).t4,ElectricityBillingSystem.customerList.get(index).t5,ElectricityBillingSystem.customerList.get(index).t6,ElectricityBillingSystem.customerList.get(index).t7,ElectricityBillingSystem.customerList.get(index).t8,ElectricityBillingSystem.customerList.get(index).t9,ElectricityBillingSystem.customerList.get(index).cC,ElectricityBillingSystem.customerList.get(index).tCC};
-                dtm2.addRow(objs);
+                    if (index >= 0) {
+                        dtm.setRowCount(0);
+                        Object[] objs = {ElectricityBillingSystem.customerList.get(index).t1, ElectricityBillingSystem.customerList.get(index).t2, ElectricityBillingSystem.customerList.get(index).t3, ElectricityBillingSystem.customerList.get(index).t4, ElectricityBillingSystem.customerList.get(index).t5, ElectricityBillingSystem.customerList.get(index).t6, ElectricityBillingSystem.customerList.get(index).t7, ElectricityBillingSystem.customerList.get(index).t8, ElectricityBillingSystem.customerList.get(index).t9, ElectricityBillingSystem.customerList.get(index).cC, ElectricityBillingSystem.customerList.get(index).tCC};
+                        dtm.addRow(objs);
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "Not found!");
+                    }
+                } catch (NumberFormatException numberFormatException) {
+                    JOptionPane.showMessageDialog(this, "Please enter an integer.", "Electricity Billing System", JOptionPane.ERROR_MESSAGE);
+                }
             }
-            else
-            {
 
-                JOptionPane.showMessageDialog(null, "Not found!");
+            else if(text1.getText().equals("")) {
+
+                String t2 = text2.getText().toUpperCase();
+                int index2 = binarySearch2(t2, ElectricityBillingSystem.customerList);
+                if (index2 >= 0) {
+                    dtm.setRowCount(0);
+                    Object[] objs = {ElectricityBillingSystem.customerList.get(index2).t1, ElectricityBillingSystem.customerList.get(index2).t2, ElectricityBillingSystem.customerList.get(index2).t3, ElectricityBillingSystem.customerList.get(index2).t4, ElectricityBillingSystem.customerList.get(index2).t5, ElectricityBillingSystem.customerList.get(index2).t6, ElectricityBillingSystem.customerList.get(index2).t7, ElectricityBillingSystem.customerList.get(index2).t8, ElectricityBillingSystem.customerList.get(index2).t9, ElectricityBillingSystem.customerList.get(index2).cC, ElectricityBillingSystem.customerList.get(index2).tCC};
+                    dtm.addRow(objs);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "Not found!");
+                }
+            }
+
+
+        }
+
+        if (e.getSource() == reset) {
+            if (ElectricityBillingSystem.customerList.isEmpty()) {
+                if (e.getSource() == reset) {
+                    JOptionPane.showMessageDialog(this, "List is empty", "Electricity Billing System", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            else{
+                text1.setText(null);
+                text2.setText(null);
+                if (dtm.getRowCount() == 1) {
+                    dtm.setRowCount(0);
+                    for (Customer cus : ElectricityBillingSystem.customerList) {
+                        String t9 = String.format("%.2f", cus.t9);
+                        String cC = String.format("%.2f", cus.cC);
+                        String tCC = String.format("%.2f", cus.tCC);
+                        Object[] objs = {cus.t1, cus.t2, cus.t3, cus.t4, cus.t5, cus.t6, cus.t7, cus.t8, cus.tU, t9, cC, tCC};
+                        dtm.addRow(objs);
+                    }
+                }
             }
         }
 
@@ -210,6 +294,7 @@ public class Records extends JFrame implements ActionListener {
             new MainMenu();
             setVisible(false);
         }
+
 
         int row = output.getSelectedRow();
         DefaultTableModel model = (DefaultTableModel) output.getModel();

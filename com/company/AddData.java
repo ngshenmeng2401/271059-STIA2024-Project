@@ -77,6 +77,10 @@ public class AddData extends JFrame implements ActionListener {
         button2 = new JButton("Reset");
         button3 = new JButton("Back");
 
+        button1.setFont(new Font("Dialog",Font.BOLD,14));
+        button2.setFont(new Font("Dialog",Font.BOLD,14));
+        button3.setFont(new Font("Dialog",Font.BOLD,14));
+
         label1.setBounds(20, 5, 150, 50);
         label2.setBounds(20, 45, 150, 50);
         label3.setBounds(20, 85, 150, 50);
